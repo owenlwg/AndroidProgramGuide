@@ -1,0 +1,4 @@
+HelloMoon要点：
+1.设备配置发生变化如旋转时保留fragment实例，setRetainInstance(true)
+2.res资源的配置符，zh land v11...
+3.fragment定义在layout文件中
