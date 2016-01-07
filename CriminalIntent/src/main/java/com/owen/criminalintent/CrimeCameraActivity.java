@@ -17,6 +17,7 @@ public class CrimeCameraActivity extends SingleFragmentActivity {
     protected Fragment createFragment() {
         Photo photo = (Photo) getIntent().getSerializableExtra(Constant.EXTRA_PHOTO);
         return CrimeCameraFragment.newInstance(photo);
+
     }
 
     @Override

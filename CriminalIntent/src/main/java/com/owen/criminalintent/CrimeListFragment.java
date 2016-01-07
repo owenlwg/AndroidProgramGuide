@@ -1,9 +1,12 @@
 package com.owen.criminalintent;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.view.ActionMode;
 import android.view.ContextMenu;
@@ -23,6 +26,7 @@ import android.widget.TextView;
 import com.owen.criminalintent.Model.Crime;
 import com.owen.criminalintent.Model.CrimeLab;
 import com.owen.criminalintent.Utils.Constant;
+import com.owen.criminalintent.Utils.OwenUtils;
 
 import java.util.ArrayList;
 
@@ -33,6 +37,7 @@ public class CrimeListFragment extends ListFragment {
 
     private ArrayList<Crime> mCrimes;
     private boolean mSubtitleVisible;
+    private Callbacks mCallbacks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,17 +120,29 @@ public class CrimeListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+        updateUI();
+    }
+
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Crime c = ((CrimeAdapter) getListAdapter()).getItem(position);
-
-//        Intent intent = new Intent(getActivity(), CrimeActivity.class);
-        Intent intent = new Intent(getActivity(), CrimePagerActivity.class);
-        intent.putExtra(Constant.EXTRA_CRIME_ID, c.getId());
-        startActivity(intent);
+        mCallbacks.onCrimeSelected(c);
     }
 
     private class CrimeAdapter extends ArrayAdapter<Crime> {
@@ -172,9 +189,11 @@ public class CrimeListFragment extends ListFragment {
                 Crime crime = new Crime();
                 CrimeLab.getCrimeLab(getActivity()).addCrime(crime);
 
-                Intent intent = new Intent(getActivity(), CrimePagerActivity.class);
-                intent.putExtra(Constant.EXTRA_CRIME_ID, crime.getId());
-                startActivity(intent);
+                ((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
+                mCallbacks.onCrimeSelected(crime);
+//                Intent intent = new Intent(getActivity(), CrimePagerActivity.class);
+//                intent.putExtra(Constant.EXTRA_CRIME_ID, crime.getId());
+//                startActivity(intent);
                 return true;
             case R.id.menu_item_show_subtitle:
                 ActionBar actionBar = getActivity().getActionBar();
@@ -212,5 +231,9 @@ public class CrimeListFragment extends ListFragment {
                 return true;
         }
         return super.onContextItemSelected(item);
+    }
+
+    public void updateUI() {
+        ((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
     }
 }

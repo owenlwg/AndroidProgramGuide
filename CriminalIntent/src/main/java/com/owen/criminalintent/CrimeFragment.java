@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,7 +52,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public class CrimeFragment extends BaseFragment{
+public class CrimeFragment extends BaseFragment {
     private static final String TAG = "CrimeFragment";
 
     private static final String DIALOG_PHOTO = "photo_dialog";
@@ -63,6 +64,8 @@ public class CrimeFragment extends BaseFragment{
     private static final int REQUEST_CONTACTS = 4;
 
     private Crime mCrime;
+    private Callbacks mCallbacks;
+
     private EditText mEditText;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
@@ -78,8 +81,8 @@ public class CrimeFragment extends BaseFragment{
         setRetainInstance(true);
 
         //通过getArguments()获取初始化参数
-        UUID crimeId = (UUID)getArguments().getSerializable(Constant.EXTRA_CRIME_ID);
-        mCrime= CrimeLab.getCrimeLab(getActivity()).getCrime(crimeId);
+        UUID crimeId = (UUID) getArguments().getSerializable(Constant.EXTRA_CRIME_ID);
+        mCrime = CrimeLab.getCrimeLab(getActivity()).getCrime(crimeId);
 
         mTempPicName = getPicName();
     }
@@ -102,10 +105,26 @@ public class CrimeFragment extends BaseFragment{
         PictureUtils.cleanImageView(mPhotoView);
     }
 
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
     @TargetApi(11)
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_crime,container,false);
+        View v = inflater.inflate(R.layout.fragment_crime, container, false);
 
         //使菜单生效
         setHasOptionsMenu(true);
@@ -128,6 +147,7 @@ public class CrimeFragment extends BaseFragment{
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setTitle(s.toString());
+                mCallbacks.onCrimeUpdated(mCrime);
             }
 
             @Override
@@ -143,29 +163,29 @@ public class CrimeFragment extends BaseFragment{
             @Override
             public void onClick(View v) {
                 Dialog dialog = new AlertDialog.Builder(getActivity())
-                        .setTitle("Picker")
-                        .setMessage("Please choose picker:")
-                        .setPositiveButton("Date Picker", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                FragmentManager fm = getActivity().getSupportFragmentManager();
-                                DatePickerFragment dateDialog = DatePickerFragment.newInstance(mCrime.getDate());
-                                //相当于Activity的startActivityForResult()
-                                dateDialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
-                                dateDialog.show(fm, Constant.DIALOG_DATE);
-                            }
-                        })
-                        .setNegativeButton("Time Picker", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                FragmentManager fm = getActivity().getSupportFragmentManager();
-                                TimePickerFragment timeDialog = TimePickerFragment.newInstance(mCrime.getDate());
-                                //相当于Activity的startActivityForResult()
-                                timeDialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
-                                timeDialog.show(fm, Constant.DIALOG_TIME);
-                            }
-                        })
-                        .create();
+                                        .setTitle("Picker")
+                                        .setMessage("Please choose picker:")
+                                        .setPositiveButton("Date Picker", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                FragmentManager fm = getActivity().getSupportFragmentManager();
+                                                DatePickerFragment dateDialog = DatePickerFragment.newInstance(mCrime.getDate());
+                                                //相当于Activity的startActivityForResult()
+                                                dateDialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                                                dateDialog.show(fm, Constant.DIALOG_DATE);
+                                            }
+                                        })
+                                        .setNegativeButton("Time Picker", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                FragmentManager fm = getActivity().getSupportFragmentManager();
+                                                TimePickerFragment timeDialog = TimePickerFragment.newInstance(mCrime.getDate());
+                                                //相当于Activity的startActivityForResult()
+                                                timeDialog.setTargetFragment(CrimeFragment.this, REQUEST_TIME);
+                                                timeDialog.show(fm, Constant.DIALOG_TIME);
+                                            }
+                                        })
+                                        .create();
                 dialog.show();
             }
         });
@@ -176,6 +196,7 @@ public class CrimeFragment extends BaseFragment{
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setSolved(isChecked);
+                mCallbacks.onCrimeUpdated(mCrime);
             }
         });
 
@@ -252,6 +273,7 @@ public class CrimeFragment extends BaseFragment{
 
             mCrime.setDate(date);
             mDateButton.setText(mCrime.getDateString());
+            mCallbacks.onCrimeUpdated(mCrime);
         } else if (requestCode == REQUEST_PHOTO) {
             String picName = data.getStringExtra(Constant.EXTRA_PHOTO_NAME);
             if (picName != null) {
@@ -283,7 +305,7 @@ public class CrimeFragment extends BaseFragment{
         } else if (requestCode == REQUEST_CONTACTS) {
             Uri contactUri = data.getData();
             String[] queryFields = new String[]{
-                ContactsContract.Contacts.DISPLAY_NAME
+                                                       ContactsContract.Contacts.DISPLAY_NAME
             };
             Cursor cursor = getActivity().getContentResolver().query(contactUri, queryFields, null, null, null);
             if (cursor.getCount() == 0) {
@@ -294,13 +316,14 @@ public class CrimeFragment extends BaseFragment{
             cursor.moveToFirst();
             String suspect = cursor.getString(0);
             mCrime.setSuspect(suspect);
+            mCallbacks.onCrimeUpdated(mCrime);
             mSuspectButton.setText(suspect);
             cursor.close();
         }
 
     }
 
-    public static CrimeFragment newInstance(UUID crimeId){
+    public static CrimeFragment newInstance(UUID crimeId) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constant.EXTRA_CRIME_ID, crimeId);
 
@@ -345,6 +368,7 @@ public class CrimeFragment extends BaseFragment{
 
     private void launchCamera(boolean existCamera) {
         if (existCamera) {
+            //调用设备自带相机
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (FileUtils.getFileUtils(getActivity()).isExternalSpaceWritable()) {
                 Uri fileUri = getOutputPictureUri();

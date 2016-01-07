@@ -33,6 +33,7 @@ import java.util.UUID;
  */
 public class CrimeCameraFragment extends Fragment {
     private static final String TAG = "CrimeCameraFragment";
+    private static final String TAG2 = "CrimeCameraFragment";
 
     private Camera mCamera;
     private SurfaceView mSurfaceView;
