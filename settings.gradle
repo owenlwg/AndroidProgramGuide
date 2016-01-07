@@ -1,1 +1,1 @@
-include ':CriminalIntent', ':HelloMoon'
+include ':CriminalIntent', ':HelloMoon', ':Tests'
