@@ -5,6 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/AndroidProgrammingGuide.iml" filepath="$PROJECT_DIR$/AndroidProgrammingGuide.iml" />
       <module fileurl="file://$PROJECT_DIR$/CriminalIntent/CriminalIntent.iml" filepath="$PROJECT_DIR$/CriminalIntent/CriminalIntent.iml" />
       <module fileurl="file://$PROJECT_DIR$/HelloMoon/HelloMoon.iml" filepath="$PROJECT_DIR$/HelloMoon/HelloMoon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Nerdlauncher/Nerdlauncher.iml" filepath="$PROJECT_DIR$/Nerdlauncher/Nerdlauncher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Photogallery/Photogallery.iml" filepath="$PROJECT_DIR$/Photogallery/Photogallery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Remotecontrol/Remotecontrol.iml" filepath="$PROJECT_DIR$/Remotecontrol/Remotecontrol.iml" />
       <module fileurl="file://$PROJECT_DIR$/Tests/Tests.iml" filepath="$PROJECT_DIR$/Tests/Tests.iml" />
     </modules>
   </component>
