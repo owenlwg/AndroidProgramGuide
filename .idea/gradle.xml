@@ -11,6 +11,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/CriminalIntent" />
+            <option value="$PROJECT_DIR$/DisplayBitmap" />
             <option value="$PROJECT_DIR$/HelloMoon" />
             <option value="$PROJECT_DIR$/Nerdlauncher" />
             <option value="$PROJECT_DIR$/Photogallery" />
