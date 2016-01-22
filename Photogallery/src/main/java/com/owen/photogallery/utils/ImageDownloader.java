@@ -15,12 +15,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IllegalFormatCodePointException;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * LruCache+DiskLruCache
- *
+ * <p/>
  * Created by Owen on 2016/1/15.
  */
 public class ImageDownloader {
@@ -30,10 +32,13 @@ public class ImageDownloader {
     private Map<ImageView, String> mImageViewsMap =
 //            new ConcurrentHashMap<ImageView, String>();
             Collections.synchronizedMap(new HashMap<ImageView, String>());
+    private Set<BitmapWorkerTask> mTaskSet;
+
 
     public ImageDownloader(Context context) {
         mContext = context;
         mImageLruCache = new ImageLruCache(context);
+        mTaskSet = new HashSet<BitmapWorkerTask>();
     }
 
     public void loadImage(ImageView imageview, String url) {
@@ -41,6 +46,7 @@ public class ImageDownloader {
         Bitmap bitmap = mImageLruCache.getBitmapFromCache(url);
         if (bitmap == null) {
             BitmapWorkerTask task = new BitmapWorkerTask();
+            mTaskSet.add(task);
             task.execute(imageview);
         } else {
             imageview.setImageBitmap(bitmap);
@@ -49,6 +55,7 @@ public class ImageDownloader {
 
     class BitmapWorkerTask extends AsyncTask<ImageView, Void, String> {
         ImageView iamgeView;
+
         @Override
         protected String doInBackground(ImageView... params) {
             iamgeView = params[0];
@@ -74,6 +81,8 @@ public class ImageDownloader {
             }
 
             iamgeView.setImageBitmap(mImageLruCache.getBitmapFromCache(imageUrl));
+
+            mTaskSet.remove(this);
         }
     }
 
@@ -85,6 +94,14 @@ public class ImageDownloader {
             e.printStackTrace();
         }
         return bitmapBytes;
+    }
+
+    public void cancelAllTasks() {
+        if (mTaskSet != null) {
+            for (BitmapWorkerTask task : mTaskSet) {
+                task.cancel(false);
+            }
+        }
     }
 
 }

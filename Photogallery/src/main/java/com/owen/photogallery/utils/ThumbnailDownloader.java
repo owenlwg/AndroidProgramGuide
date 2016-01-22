@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * LruCache + disk cache
+ * LruCache
  * Created by Owen on 2016/1/12.
  */
 public class ThumbnailDownloader extends HandlerThread {
