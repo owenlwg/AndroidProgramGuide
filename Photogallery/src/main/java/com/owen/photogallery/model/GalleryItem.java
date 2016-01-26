@@ -7,6 +7,7 @@ public class GalleryItem {
     private String mId;
     private String mCaption;
     private String mUrl;
+    private String mOwner;
 
     public GalleryItem(String id, String caption, String url) {
         mId = id;
@@ -36,6 +37,18 @@ public class GalleryItem {
 
     public void setUrl(String url) {
         mUrl = url;
+    }
+
+    public String getOwner() {
+        return mOwner;
+    }
+
+    public void setOwner(String owner) {
+        mOwner = owner;
+    }
+
+    public String getPhotoPageUrl() {
+        return "https://www.flickr.com/photos/" + mOwner + "/" + mId;
     }
 
     @Override

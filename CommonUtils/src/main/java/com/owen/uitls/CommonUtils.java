@@ -1,14 +1,17 @@
-package com.owen.criminalintent.Utils;
+package com.owen.uitls;
 
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 
-import com.owen.criminalintent.R;
 
 /**
- * Created by Owen on 2016/1/6.
+ * 提供了一些常用的公共方法
  */
-public class OwenUtils {
+public class CommonUtils {
+
     /**
      * 判断当前设备是手机还是平板
      */
@@ -25,6 +28,14 @@ public class OwenUtils {
         return cm.getBackgroundDataSetting() && cm.getActiveNetworkInfo() != null;
     }
 
+    /**
+     * 判断某个PendingIntent是否已存在
+     */
+    public static boolean isServiceAlarmOn(Context context) {
+        Intent intent = new Intent(context, Service.class); //Service需要替换
+        PendingIntent pi = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_NO_CREATE);
+        return pi != null;
+    }
 
 
 

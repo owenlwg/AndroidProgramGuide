@@ -1,1 +1,1 @@
-include ':CriminalIntent', ':HelloMoon', ':Tests', ':Nerdlauncher', ':Remotecontrol', ':Photogallery', 'DisplayBitmap'
+include ':CriminalIntent', ':HelloMoon', ':Tests', ':Nerdlauncher', ':Remotecontrol', ':Photogallery', ':CommonUtils', 'DisplayBitmap'

@@ -4,13 +4,14 @@ import android.app.SearchManager;
 import android.app.SearchableInfo;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,12 +20,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SearchView;
 
 import com.owen.photogallery.model.GalleryItem;
+import com.owen.photogallery.service.PollIntentService;
 import com.owen.photogallery.utils.ImageDownloader;
 import com.owen.photogallery.utils.ThumbnailDownloader;
 
@@ -33,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Created by Owen on 2016/1/11.
  */
-public class PhotoGalleryFragment extends Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
 
     private GridView mGridView;
     private ArrayList<GalleryItem> mGalleryItems;
@@ -50,6 +53,7 @@ public class PhotoGalleryFragment extends Fragment {
         setHasOptionsMenu(true);
 
         updateItems();
+
         mImageDownloader = new ImageDownloader(getActivity());
 //        mThumbnailDownloader = new ThumbnailDownloader(getActivity(), mHandler);
 //        mThumbnailDownloader.start();
@@ -67,6 +71,17 @@ public class PhotoGalleryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
 
         mGridView = (GridView) view.findViewById(R.id.gridview);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Uri uri = Uri.parse((mGalleryItems.get(position).getPhotoPageUrl()));
+
+                Intent intent = new Intent(getActivity(), PhotoPageActivity.class);
+                intent.setData(uri);
+
+                startActivity(intent);
+            }
+        });
 
         setupAdapter();
 
@@ -79,7 +94,7 @@ public class PhotoGalleryFragment extends Fragment {
         protected ArrayList<GalleryItem> doInBackground(Void... params) {
 //            String query = "android";  //just for test
             String query = PreferenceManager.getDefaultSharedPreferences(getActivity())
-                                    .getString(FlickrFetcher.PREF_SEARCH_QUERY, null);
+                                    .getString(Constant.PREF_SEARCH_QUERY, null);
             if (!TextUtils.isEmpty(query)) {
                 return new FlickrFetcher().search(getActivity(), query);
             } else {
@@ -172,9 +187,35 @@ public class PhotoGalleryFragment extends Fragment {
                 clearPerference();
                 updateItems();
                 return true;
+            case R.id.menu_item_toggle_polling:
+                boolean shoudStartAlarm = !PollIntentService.isServiceAlarmOn(getActivity());
+                PollIntentService.setServiceAlarm(getActivity(), shoudStartAlarm);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    getActivity().invalidateOptionsMenu();
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem item = menu.findItem(R.id.menu_item_toggle_polling);
+        if (PollIntentService.isServiceAlarmOn(getActivity())) {
+            item.setTitle(R.string.stop_polling);
+        } else {
+            item.setTitle(R.string.start_polling);
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+//        mThumbnailDownloader.clearQueue();
     }
 
     @Override
@@ -188,7 +229,7 @@ public class PhotoGalleryFragment extends Fragment {
     private void clearPerference() {
         PreferenceManager.getDefaultSharedPreferences(getActivity())
                 .edit()
-                .putString(FlickrFetcher.PREF_SEARCH_QUERY, null)
+                .putString(Constant.PREF_SEARCH_QUERY, null)
                 .commit();
     }
 }

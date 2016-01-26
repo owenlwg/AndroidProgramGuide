@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AndroidProgrammingGuide.iml" filepath="$PROJECT_DIR$/AndroidProgrammingGuide.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CommonUtils/CommonUtils.iml" filepath="$PROJECT_DIR$/CommonUtils/CommonUtils.iml" />
       <module fileurl="file://$PROJECT_DIR$/CriminalIntent/CriminalIntent.iml" filepath="$PROJECT_DIR$/CriminalIntent/CriminalIntent.iml" />
       <module fileurl="file://$PROJECT_DIR$/DisplayBitmap/DisplayBitmap.iml" filepath="$PROJECT_DIR$/DisplayBitmap/DisplayBitmap.iml" />
       <module fileurl="file://$PROJECT_DIR$/HelloMoon/HelloMoon.iml" filepath="$PROJECT_DIR$/HelloMoon/HelloMoon.iml" />

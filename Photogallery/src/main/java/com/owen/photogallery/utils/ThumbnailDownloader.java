@@ -113,4 +113,9 @@ public class ThumbnailDownloader extends HandlerThread {
 
         return bitmap;
     }
+
+    public void clearQueue() {
+        mHandler.removeMessages(MESSAGE_DOWNLOAD);
+        mImageViewsMap.clear();
+    }
 }

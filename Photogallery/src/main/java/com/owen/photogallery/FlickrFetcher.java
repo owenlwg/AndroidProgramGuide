@@ -32,8 +32,6 @@ public class FlickrFetcher {
     private static final String PARAM_EXTRAS = "extras";
     private static final String PARAM_TEXT = "text";
 
-    public static final String PREF_SEARCH_QUERY = "searchQuery";
-
     private static final String XML_PHOTO = "photo";
 
 
@@ -117,7 +115,9 @@ public class FlickrFetcher {
                     String id = parser.getAttributeValue(null, "id");
                     String caption = parser.getAttributeValue(null, "title");
                     String smallUrl = parser.getAttributeValue(null, EXTRA_SMALL_URL);
+                    String owner = parser.getAttributeValue(null, "owner");
                     GalleryItem item = new GalleryItem(id, caption, smallUrl);
+                    item.setOwner(owner);
 
                     items.add(item);
                 }
@@ -148,7 +148,9 @@ public class FlickrFetcher {
                     String id = parser.getAttributeValue(null, "id");
                     String caption = parser.getAttributeValue(null, EXTRA_SMALL_URL);
                     String smallUrl = parser.getAttributeValue(null, EXTRA_SMALL_URL);
+                    String owner = parser.getAttributeValue(null, "owner");
                     GalleryItem item = new GalleryItem(id, caption, smallUrl);
+                    item.setOwner(owner);
 
                     items.add(item);
                 }
@@ -179,7 +181,9 @@ public class FlickrFetcher {
                     String id = parser.getAttributeValue(null, "id");
                     String caption = parser.getAttributeValue(null, EXTRA_SMALL_URL);
                     String smallUrl = parser.getAttributeValue(null, EXTRA_SMALL_URL);
+                    String owner = parser.getAttributeValue(null, "owner");
                     GalleryItem item = new GalleryItem(id, caption, smallUrl);
+                    item.setOwner(owner);
 
                     items.add(item);
                 }

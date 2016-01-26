@@ -1,15 +1,9 @@
 CriminalIntent：
 1.Activity继承FragmentActivity，用来托管Fragment
-
 2.使用FragmentManager来管理Fragment
-
 3.在Fragment中使用newInstance的方式创建和传递数据
-
 4.同一Activity托管的两个Fragment的数据传输，使用A.setTargetFragment(A.this, REQUEST_DATE)
 和B.getTargetFragment.onActivityResult()，在A里边重写OnActivityResult()
-
 5.ViewPager的使用
-
 6.DialogFragment的使用
-
 7.getExternalFilesDir的使用

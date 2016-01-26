@@ -1,6 +1,10 @@
 Photogallery：
-1.HttpURLConnection连接网络
+1.HttpURLConnection连接网络获取byte[]
 2.XmlPullParser解析XML
 3.GridView里图片的异步加载
 4.LruCache和DiskLruCache
 5.SearchView和onNewInent方法
+6.IntentService
+7.PedingIntent和AlarmManager
+8.BroadcastReceiver和有序BroadcastReceiver
+9.WebView

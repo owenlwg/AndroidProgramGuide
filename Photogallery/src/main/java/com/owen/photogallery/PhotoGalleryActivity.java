@@ -26,7 +26,7 @@ public class PhotoGalleryActivity extends SingleFragmentActivity{
 
             PreferenceManager.getDefaultSharedPreferences(this)
                     .edit()
-                    .putString(FlickrFetcher.PREF_SEARCH_QUERY, query)
+                    .putString(Constant.PREF_SEARCH_QUERY, query)
                     .commit();
 
             fragment.updateItems();
